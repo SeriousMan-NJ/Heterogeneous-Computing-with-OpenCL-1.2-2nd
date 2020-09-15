@@ -3,9 +3,14 @@
 // System includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 // OpenCL includes
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
+#else
+#include <CL/cl.h>
+#endif
 
 // OpenCL kernel to perform an element-wise
 // add of two arrays
@@ -23,6 +28,16 @@ const char *programSource =
     "   // 'A' and 'B', and store the result in 'C'.     \n"
     "   C[idx] = A[idx] + B[idx];                        \n"
     "}                                                   \n";
+
+void chk(cl_int status, const char *cmd)
+{
+
+   if (status != CL_SUCCESS)
+   {
+      printf("%s failed (%d)\n", cmd, status);
+      exit(-1);
+   }
+}
 
 int main()
 {
@@ -63,6 +78,7 @@ int main()
   // Use clGetPlatformIDs() to retrieve the number of
   // platforms
   status = clGetPlatformIDs(0, NULL, &numPlatforms);
+  chk(status, "clGetPlatformIDs");
 
   // Allocate enough space for each platform
   platforms =

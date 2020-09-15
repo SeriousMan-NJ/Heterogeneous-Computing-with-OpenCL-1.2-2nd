@@ -3,7 +3,11 @@
 #include <stdlib.h>
 
 // OpenCL includes
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
+#else
+#include <CL/cl.h>
+#endif
 
 cl_program load_program(cl_context context, cl_device_id device, const char* filename) {
   FILE *fp = fopen(filename, "rt");
